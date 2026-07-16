@@ -1,26 +1,89 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* @theme ini yang bikin Tailwind generate utility class
+   kayak bg-accent, text-warm, font-display, dll — otomatis
+   dari nama variable di sini, ga perlu tailwind.config.ts lagi */
+@theme {
+  --color-bg: #0B0E14;
+  --color-elevated: #12161F;
+  --color-accent: #4FA8FF;
+  --color-warm: #FFB648;
+  --color-primary: #F5F6FA;
+  --color-muted: #8B93A7;
+  --color-line: #232838;
+
+  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), monospace;
+  --animate-loop-scroll: loop-scroll 25s linear infinite;
+  --animate-diagonal-drift: diagonal-drift 6s linear infinite;
+  --animate-chart-grow: chart-grow 2.4s ease-in-out infinite;
+  --animate-cursor-float: cursor-float 5s ease-in-out infinite;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Background titik-titik ala canvas Figma — "workspace" feel */
+.bg-grid {
+  background-image: radial-gradient(var(--color-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--color-bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-line);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+@keyframes chart-grow {
+  0%, 100% { transform: scaleY(0.55); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes cursor-float {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(30px, 6px); }
+  50% { transform: translate(15px, -4px); }
+  75% { transform: translate(40px, 4px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes diagonal-drift {
+  from { background-position: 0 0; }
+  to { background-position: 48px 48px; }
+}
+
+@keyframes loop-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
