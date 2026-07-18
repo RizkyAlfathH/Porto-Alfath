@@ -32,6 +32,11 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.text-stroke {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-primary);
+}
+
 /* Background titik-titik ala canvas Figma — "workspace" feel */
 .bg-grid {
   background-image: radial-gradient(var(--color-line) 1px, transparent 1px);

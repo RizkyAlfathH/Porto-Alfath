@@ -15,10 +15,10 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "contoh-project-1",
-    title: "Nama Project Kamu",
+    slug: "Portofolio",
+    title: "Portofolio Rizky Alfath",
     description:
-      "Deskripsi singkat 1-2 kalimat tentang project ini, masalah apa yang diselesaikan, dan hasilnya apa.",
+      "Proyek ini adalah portofolio pribadi saya yang buat. Menampilkan proyek-proyek yang telah saya kerjakan, skill yang saya kuasai, pengalaman kerja, dan informasi kontak.",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
     // image: "/images/project-1.png",
     link: "https://project-demo.vercel.app",
@@ -26,12 +26,30 @@ export const projects: Project[] = [
     featured: true,
   },
   {
-    slug: "contoh-project-2",
-    title: "Project Kedua",
-    description: "Ganti dengan project kamu yang lain, misal tugas sekolah/PKL yang paling bagus.",
-    tags: ["React", "Firebase"],
+    slug: "Koperasi-Sekolah",
+    title: "Sistem Koperasi Sekolah",
+    description: "Proyek ini adalah sistem koperasi simpan pinjam untuk semua anggota koperasi sekolah. Sistem ini memungkinkan anggota untuk melakukan transaksi simpan pinjam, melihat riwayat transaksi, dan mengelola data anggota koperasi.",
+    tags: ["Django", "Django REST Framework", "Bootstrap", "MySQL"],
     // image: "/images/project-2.png",
     github: "https://github.com/username/repo-2",
+  },
+  {
+    slug: "perpustakaan-sekolah",
+    title: "Aplikasi Perpustakaan Sekolah",
+    description: "Proyek ini adalah aplikasi perpustakaan sekolah yang memungkinkan siswa untuk menjelajahi koleksi buku, meminjam buku, dan mengelola data peminjaman.",
+    tags: ["Laravel", "Bootstrap", "MySQL"],
+    // image: "/images/project-3.png",
+    link: "",
+    github: "",
+  },
+  {
+    slug: "Pengaduan-Masyarakat",
+    title: "Aplikasi Pengaduan Masyarakat",
+    description: "Proyek ini adalah aplikasi untuk mengelola pengaduan masyarakat, memungkinkan warga untuk melaporkan masalah dan admin untuk meresponsnya.",
+    tags: ["Laravel", "Bootstrap", "MySQL"],
+    // image: "/images/project-4.png",
+    link: "",
+    github: "",
   },
 ];
 
