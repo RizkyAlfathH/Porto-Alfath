@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { FileDown, Mail } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { FaLinkedinIn, FaInstagram, FaTiktok } from "react-icons/fa6";
 import ScrollReveal from "@/app/components/reactbits/ScrollReveal";
 import Lanyard from "@/app/components/Lanyard/Lanyard";
 import { profile, projects } from "@/app/lib/data";
@@ -58,13 +61,34 @@ export default function Hero() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.34}>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <HeroButton href="#projects" variant="solid">
                 Lihat Karya
               </HeroButton>
-              <HeroButton href={profile.resume} variant="outline" download>
-                Unduh CV
-              </HeroButton>
+
+              <HeroIconLink href={profile.resume} label="Unduh CV" download>
+                <FileDown size={18} strokeWidth={2} />
+              </HeroIconLink>
+
+              <HeroIconLink href={`mailto:${profile.email}`} label="Email">
+                <Mail size={18} strokeWidth={2} />
+              </HeroIconLink>
+
+              <HeroIconLink href={profile.github} label="GitHub" external>
+                <SiGithub size={18} />
+              </HeroIconLink>
+
+              <HeroIconLink href={profile.linkedin} label="LinkedIn" external>
+                <FaLinkedinIn size={18} />
+              </HeroIconLink>
+
+              <HeroIconLink href={profile.instagram} label="Instagram" external>
+                <FaInstagram size={18} />
+              </HeroIconLink>
+
+              <HeroIconLink href={profile.tiktok} label="TikTok" external>
+                <FaTiktok size={16} />
+              </HeroIconLink>
             </div>
           </ScrollReveal>
 
@@ -104,6 +128,40 @@ export default function Hero() {
 
       <ScrollCue />
     </section>
+  );
+}
+
+/* ── Tombol icon bulat untuk CV & medsos, gaya sama kayak IconLink di Contact ── */
+function HeroIconLink({
+  href,
+  label,
+  children,
+  external,
+  download,
+}: {
+  href?: string;
+  label: string;
+  children: React.ReactNode;
+  external?: boolean;
+  download?: boolean;
+}) {
+  if (!href) return null;
+
+  return (
+    <motion.a
+      href={href}
+      aria-label={label}
+      title={label}
+      target={external ? "_blank" : undefined}
+      rel={external ? "noopener noreferrer" : undefined}
+      download={download}
+      whileHover={{ y: -2, scale: 1.06 }}
+      whileTap={{ scale: 0.94 }}
+      transition={{ duration: 0.15 }}
+      className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-primary transition-colors hover:border-accent hover:text-accent"
+    >
+      {children}
+    </motion.a>
   );
 }
 

@@ -51,11 +51,6 @@ export default async function ProjectDetailPage({ params }: PageProps) {
               <BrowserMockup />
             </div>
           )}
-          {project.featured && (
-            <span className="absolute right-3 top-3 z-10 rounded-full bg-warm px-3 py-1 font-mono text-xs font-medium text-bg">
-              featured
-            </span>
-          )}
         </div>
 
         {/* Judul & deskripsi lengkap */}

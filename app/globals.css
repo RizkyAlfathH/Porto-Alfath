@@ -1,16 +1,39 @@
 @import "tailwindcss";
 
+/* Palet warna: dark = default (:root), light = pas class "light"
+   nempel di <html>. @theme di bawah cuma nunjuk ke variabel ini,
+   jadi utility kayak bg-accent otomatis ikut ganti pas tema pindah. */
+:root {
+  --bg: #0B0E14;
+  --elevated: #12161F;
+  --accent: #4FA8FF;
+  --warm: #FFB648;
+  --primary: #F5F6FA;
+  --muted: #8B93A7;
+  --line: #232838;
+}
+
+.light {
+  --bg: #F1EFEA;
+  --elevated: #FAF8F4;
+  --accent: #1F7AE0;
+  --warm: #C97A1B;
+  --primary: #1B1E27;
+  --muted: #6B7280;
+  --line: #DFDCD3;
+}
+
 /* @theme ini yang bikin Tailwind generate utility class
    kayak bg-accent, text-warm, font-display, dll — otomatis
    dari nama variable di sini, ga perlu tailwind.config.ts lagi */
 @theme {
-  --color-bg: #0B0E14;
-  --color-elevated: #12161F;
-  --color-accent: #4FA8FF;
-  --color-warm: #FFB648;
-  --color-primary: #F5F6FA;
-  --color-muted: #8B93A7;
-  --color-line: #232838;
+  --color-bg: var(--bg);
+  --color-elevated: var(--elevated);
+  --color-accent: var(--accent);
+  --color-warm: var(--warm);
+  --color-primary: var(--primary);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
 
   --font-display: var(--font-space-grotesk), system-ui, sans-serif;
   --font-body: var(--font-inter), system-ui, sans-serif;
@@ -30,6 +53,13 @@ body {
   color: var(--color-primary);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Semua elemen ikut transisi halus pas tema pindah, tapi
+   di-skip kalau prefers-reduced-motion (lihat media query bawah) */
+*, *::before, *::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, fill 0.3s ease;
 }
 
 .text-stroke {

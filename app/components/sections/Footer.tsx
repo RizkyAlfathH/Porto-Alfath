@@ -7,7 +7,7 @@ export default function Footer() {
     <footer className="border-t border-line px-6 py-8 md:px-16 lg:px-24">
       <div className="flex flex-col items-center justify-between gap-4 font-mono text-xs text-muted md:flex-row">
         <p>
-          © {year} {profile.name}. Dibangun pakai Next.js & Tailwind CSS.
+          © {year} {profile.name}. All rights reserved.
         </p>
         <p>
           <a href="#hero" className="transition-colors hover:text-accent">
