@@ -163,12 +163,12 @@ export default function Navbar() {
                 <div className="h-px w-6 bg-line/60" />
 
                 {/* Toggle mode gelap/terang */}
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
             </motion.aside>
 
             {/* ── Tombol hamburger + toggle tema, mobile only ── */}
             <div className="fixed right-5 top-5 z-50 flex items-center gap-2 md:hidden">
-                <ThemeToggle />
+                {/* <ThemeToggle /> */}
                 <motion.button
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}

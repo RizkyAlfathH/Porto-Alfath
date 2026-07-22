@@ -6,9 +6,10 @@ export type Project = {
   slug: string;
   title: string;
   description: string;
-  tags: string[]; // tech stack yang dipakai
-  image: string; // path di /public/images/projects/ — kalau belum ada, biarin aja kosong dulu
-  link?: string; // live demo
+  tags: string[];       // dipakai sebagai "Technologies Used"
+  features?: string[];  // dipakai buat panel "Key Features"
+  image: string;         // path di /public/images/projects/ — kalau belum ada, biarin aja kosong dulu
+  link?: string;         // live demo
   github?: string;
 };
 
@@ -19,7 +20,12 @@ export const projects: Project[] = [
     description:
       "Website portofolio pribadi yang dibangun menggunakan Next.js dan TypeScript untuk menampilkan proyek, pengalaman, keterampilan, dan informasi kontak dengan desain modern, responsif, serta interaktif.",
     tags: ["Next.js", "TypeScript", "Tailwind CSS"],
-    image: "/images/project-1.png",
+    features: [
+      "Website full animasi",
+      "Desain modern dan elegan",
+      "Fully responsive di semua device",
+    ],
+    image: "/assets/images/project/porto-alfath.webp",
     link: undefined,
     github: undefined,
   },
@@ -28,14 +34,14 @@ export const projects: Project[] = [
     title: "Sistem Koperasi Sekolah",
     description:
       "Sistem koperasi simpan pinjam berbasis web dan mobile yang terdiri dari dashboard admin menggunakan Django, REST API, dan aplikasi Flutter untuk anggota koperasi. Mendukung pengelolaan anggota, transaksi simpan pinjam, riwayat transaksi, serta sinkronisasi data antara aplikasi web dan mobile.",
-    tags: [
-      "Flutter",
-      "Django",
-      "REST API",
-      "MySQL",
-      "Bootstrap",
+    tags: ["Flutter", "Django", "REST API", "MySQL", "Bootstrap"],
+    features: [
+      "Dashboard admin berbasis Django",
+      "Aplikasi mobile untuk anggota (Flutter)",
+      "Sinkronisasi data real-time via REST API",
+      "Riwayat transaksi simpan pinjam lengkap",
     ],
-    image: "/images/project-2.png",
+    image: "/assets/images/project/koperasi.webp",
     github: undefined,
   },
   // {
@@ -43,19 +49,26 @@ export const projects: Project[] = [
   //   title: "Aplikasi Perpustakaan Sekolah",
   //   description: "Proyek ini adalah aplikasi perpustakaan sekolah yang memungkinkan siswa untuk menjelajahi koleksi buku, meminjam buku, dan mengelola data peminjaman.",
   //   tags: ["Laravel", "Bootstrap", "MySQL"],
-  //   // image: "/images/project-3.png",
+  //   features: ["Katalog buku digital", "Manajemen peminjaman", "Notifikasi jatuh tempo"],
+  //   image: "/images/project-3.png",
   //   link: undefined,
   //   github: undefined,
   // },
-  {
-    slug: "Pengaduan-Masyarakat",
-    title: "Aplikasi Pengaduan Masyarakat",
-    description: "Proyek ini adalah aplikasi untuk mengelola pengaduan masyarakat, memungkinkan warga untuk melaporkan masalah dan admin untuk meresponsnya.",
-    tags: ["Laravel", "Bootstrap", "MySQL"],
-    image: "/images/project-4.png",
-    link: undefined,
-    github: undefined,
-  },
+  // {
+  //   slug: "Pengaduan-Masyarakat",
+  //   title: "Aplikasi Pengaduan Masyarakat",
+  //   description:
+  //     "Proyek ini adalah aplikasi untuk mengelola pengaduan masyarakat, memungkinkan warga untuk melaporkan masalah dan admin untuk meresponsnya.",
+  //   tags: ["Laravel", "Bootstrap", "MySQL"],
+  //   features: [
+  //     "Form pengaduan untuk warga",
+  //     "Dashboard admin untuk respons pengaduan",
+  //     "Status tracking pengaduan",
+  //   ],
+  //   image: "/images/project-4.png",
+  //   link: undefined,
+  //   github: undefined,
+  // },
 ];
 
 export type Certificate = {
