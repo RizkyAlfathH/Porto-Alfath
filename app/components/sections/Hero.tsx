@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { FileDown, Mail } from "lucide-react";
-import { SiGithub } from "@icons-pack/react-simple-icons";
-import { FaLinkedinIn, FaInstagram, FaTiktok } from "react-icons/fa6";
+// import { FileDown, Mail } from "lucide-react";
+// import { SiGithub } from "@icons-pack/react-simple-icons";
+// import { FaLinkedinIn, FaInstagram, FaTiktok } from "react-icons/fa6";
 import ScrollReveal from "@/app/components/reactbits/ScrollReveal";
 import Lanyard from "@/app/components/Lanyard/Lanyard";
-import { profile, projects } from "@/app/lib/data";
+import { profile, projects, skills, certificates } from "@/app/lib/data";
 
 const floatingBubbles = [
   { text: "⚡ Frontend Developer", pos: "left-[3%] top-[10%]", delay: 0, duration: 5.5 },
@@ -16,10 +16,17 @@ const floatingBubbles = [
   { text: "✨ Open to work", pos: "right-[4%] bottom-[10%]", delay: 0.3, duration: 5 },
 ];
 
+// Ganti/tambah role di sini sesuai yang mau ditampilkan bergantian
+const typingRoles = [
+  profile.role,
+  "Frontend Developer",
+  "Full-Stack Developer",
+];
+
 const stats = [
-  { icon: "📁", label: "Proyek Selesai", get: () => projects.length, suffix: "+" },
-  { icon: "🕒", label: "Tahun Pengalaman", get: () => 3, suffix: "+" },
-  { icon: "☕", label: "Cangkir Kopi", get: () => 999, suffix: "+" },
+  { icon: "📁", label: "Proyek Selesai", value: projects.length, suffix: "+" },
+  { icon: "🛠️", label: "Teknologi", value: skills.length, suffix: "+" },
+  { icon: "🏆", label: "Sertifikasi", value: certificates.length, suffix: "" },
 ];
 
 export default function Hero() {
@@ -38,9 +45,9 @@ export default function Hero() {
       <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:gap-12">
         {/* ── Kolom kiri: identitas ── */}
         <div>
-          <ScrollReveal>
+          {/* <ScrollReveal>
             <p className="font-mono text-sm text-accent">{"// 00 hero"}</p>
-          </ScrollReveal>
+          </ScrollReveal> */}
 
           <ScrollReveal delay={0.1}>
             <h1 className="mt-5 font-display text-4xl font-semibold leading-[1.05] text-primary md:text-6xl">
@@ -49,29 +56,31 @@ export default function Hero() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.18}>
-            <p className="mt-3 font-mono text-base text-warm md:text-lg">
-              {profile.role}
+            <p className="mt-3 min-h-[1.5em] font-mono text-base text-warm md:text-lg">
+              <TypingRole roles={typingRoles} />
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.26}>
             <p className="mt-6 max-w-md text-base leading-relaxed text-muted md:text-lg">
-              {profile.tagline}
+              Membangun website modern yang responsif, cepat, dan mudah
+              digunakan dengan mengutamakan pengalaman pengguna serta kode
+              yang bersih.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.34}>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <HeroButton href="#projects" variant="solid">
-                Lihat Karya
+                Lihat Proyek
               </HeroButton>
 
-              <HeroIconLink href={profile.resume} label="Unduh CV" download>
-                <FileDown size={18} strokeWidth={2} />
-              </HeroIconLink>
+              <HeroButton href="#contact" variant="outline">
+                Hubungi Saya
+              </HeroButton>
 
-              <HeroIconLink href={`mailto:${profile.email}`} label="Email">
-                <Mail size={18} strokeWidth={2} />
+              {/* <HeroIconLink href={profile.resume} label="Unduh CV" download>
+                <FileDown size={18} strokeWidth={2} />
               </HeroIconLink>
 
               <HeroIconLink href={profile.github} label="GitHub" external>
@@ -88,7 +97,7 @@ export default function Hero() {
 
               <HeroIconLink href={profile.tiktok} label="TikTok" external>
                 <FaTiktok size={16} />
-              </HeroIconLink>
+              </HeroIconLink> */}
             </div>
           </ScrollReveal>
 
@@ -99,7 +108,7 @@ export default function Hero() {
                     <div className="flex items-baseline justify-between">
                       <span className="font-mono text-xs text-muted">{s.icon} {s.label}</span>
                       <span className="font-display text-lg font-semibold text-primary">
-                        <Counter to={s.get()} suffix={s.suffix} delay={i * 0.1} />
+                        <Counter to={s.value} suffix={s.suffix} delay={i * 0.1} />
                       </span>
                     </div>
                     <div className="mt-1.5 h-[3px] w-full overflow-hidden rounded-full bg-line/50">
@@ -125,9 +134,43 @@ export default function Hero() {
           </BadgeStage>
         </div>
       </div>
-
-      <ScrollCue />
     </section>
+  );
+}
+
+/* ── Efek ngetik untuk role, cycle antar beberapa teks ── */
+function TypingRole({ roles }: { roles: string[] }) {
+  const [index, setIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const current = roles[index];
+
+    if (!deleting && subIndex === current.length) {
+      const pause = setTimeout(() => setDeleting(true), 1400);
+      return () => clearTimeout(pause);
+    }
+
+    if (deleting && subIndex === 0) {
+      setDeleting(false);
+      setIndex((prev) => (prev + 1) % roles.length);
+      return;
+    }
+
+    const speed = deleting ? 35 : 70;
+    const timeout = setTimeout(() => {
+      setSubIndex((prev) => prev + (deleting ? -1 : 1));
+    }, speed);
+
+    return () => clearTimeout(timeout);
+  }, [subIndex, deleting, index, roles]);
+
+  return (
+    <>
+      {roles[index].substring(0, subIndex)}
+      <span className="animate-pulse text-accent">|</span>
+    </>
   );
 }
 
@@ -365,28 +408,5 @@ function DriftingOrbs() {
         style={{ background: "rgba(255,182,72,0.08)" }}
       />
     </div>
-  );
-}
-
-/* ── Indikator scroll ── */
-function ScrollCue() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 1.4, duration: 0.6 }}
-      className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2"
-    >
-      <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-        className="flex flex-col items-center gap-2"
-      >
-        <span className="font-mono text-[10px] uppercase tracking-widest text-muted">
-          scroll
-        </span>
-        <div className="h-8 w-px bg-gradient-to-b from-muted to-transparent" />
-      </motion.div>
-    </motion.div>
   );
 }

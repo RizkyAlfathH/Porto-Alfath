@@ -216,8 +216,8 @@ export const experiences: Experience[] = [
 
 // Info kontak & sosial media, dipakai di Hero & Contact section
 export const profile = {
-  name: "Rizky Alfath",
-  role: "Frontend Developer",
+  name: "RIZKY ALFATH",
+  role: "Fresh Graduate",
   tagline: "Fresh graduate SMK RPL yang suka bikin interface yang rapi dan interaktif.",
   email: "rizkyalfath80@gmail.com",
   github: "https://github.com/RizkyAlfathH",
