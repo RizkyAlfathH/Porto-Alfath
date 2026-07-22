@@ -197,7 +197,7 @@ export const experiences: Experience[] = [
     description:
       "Fokus belajar pemrograman web, basis data, dan pengembangan perangkat lunak.",
     type: "sekolah",
-    image: "/assets/images/experience/sekolah.webp",
+    image: "/assets/images/experience/Sekolah.webp",
   },
 ];
 
