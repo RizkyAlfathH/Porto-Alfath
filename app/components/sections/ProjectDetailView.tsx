@@ -23,12 +23,14 @@ import {
   SiLaravel,
   SiReact,
   SiPhp,
+  SiFramer,
+  SiThreedotjs,
 } from "react-icons/si";
 import { TbApi } from "react-icons/tb";
 import ScrollReveal from "@/app/components/reactbits/ScrollReveal";
 import { DriftingOrbs, SectionWatermark } from "@/app/components/reactbits/SectionDecor";
 import BrowserMockup from "@/app/components/reactbits/BrowserMockup";
-import type { Project } from "@/app/lib/data";
+import type { Project, ProjectResource, ResourceType } from "@/app/lib/data";
 
 // Nama tech harus persis sama dengan string di `tags` (lib/data.ts).
 // Kalau gak ada di sini, otomatis pakai ikon kubus generik.
@@ -50,6 +52,8 @@ const techIconMap: Record<string, IconType> = {
   "Laravel": SiLaravel,
   "React": SiReact,
   "PHP": SiPhp,
+  "Framer Motion": SiFramer,
+  "Three.js": SiThreedotjs,
   "REST API": TbApi,
 };
 
@@ -58,6 +62,17 @@ const statusMap = {
   private: { label: "Internal, tidak publik", dot: "bg-warm" },
   development: { label: "Dalam pengembangan", dot: "bg-accent" },
 } as const;
+
+// Label kecil + ikon untuk tiap jenis resource
+const resourceMeta: Record<ResourceType, { tag: string; icon: React.ReactNode }> = {
+  docs: { tag: "Dokumentasi", icon: <DocIcon /> },
+  design: { tag: "Desain", icon: <DesignIcon /> },
+  download: { tag: "Unduhan", icon: <DownloadIcon /> },
+  video: { tag: "Video", icon: <PlayIcon /> },
+  github: { tag: "Repository", icon: <GitIcon /> },
+  demo: { tag: "Demo", icon: <ExternalIcon /> },
+  other: { tag: "Tautan", icon: <ExternalIcon /> },
+};
 
 type NavProject = Pick<Project, "slug" | "title">;
 
@@ -79,6 +94,8 @@ export default function ProjectDetailView({ project, prev, next }: Props) {
   const featureCount = project.features?.length ?? 0;
   const hasLinks = Boolean(project.link || project.github);
   const status = project.status ? statusMap[project.status] : undefined;
+  const resources = project.resources ?? [];
+  const mobileShots = project.mobileScreenshots ?? [];
 
   const meta = [
     { label: "Peran", value: project.role },
@@ -217,8 +234,9 @@ export default function ProjectDetailView({ project, prev, next }: Props) {
                       onClick={() => setActive(i)}
                       aria-label={`Lihat gambar ${i + 1}`}
                       aria-pressed={i === active}
-                      className={`relative aspect-video w-28 shrink-0 overflow-hidden rounded-lg border transition-colors ${i === active ? "border-accent" : "border-line opacity-70 hover:opacity-100"
-                        }`}
+                      className={`relative aspect-video w-28 shrink-0 overflow-hidden rounded-lg border transition-colors ${
+                        i === active ? "border-accent" : "border-line opacity-70 hover:opacity-100"
+                      }`}
                     >
                       {failed[src] ? (
                         <span className="flex h-full w-full items-center justify-center bg-elevated text-muted">
@@ -257,6 +275,71 @@ export default function ProjectDetailView({ project, prev, next }: Props) {
             )}
           </div>
         </div>
+
+        {/* ── Tampilan aplikasi mobile: cuma muncul kalau project punya versi mobile ── */}
+        {mobileShots.length > 0 && (
+          <ScrollReveal>
+            <section className="mt-16" aria-labelledby="mobile-title">
+              <h2
+                id="mobile-title"
+                className="flex items-center gap-2 font-display text-lg font-semibold text-primary"
+              >
+                <PhoneIcon /> Tampilan aplikasi mobile
+              </h2>
+              <p className="mt-2 max-w-xl text-sm text-muted">
+                Aplikasi untuk pengguna akhir. Dashboard web di atas dipakai pengelola.
+              </p>
+              <ul className="mt-6 flex gap-5 overflow-x-auto pb-3">
+                {mobileShots.map((shot) => (
+                  <li key={shot.src} className="w-40 shrink-0 sm:w-44">
+                    <div className="relative aspect-[9/19] overflow-hidden rounded-[22px] border border-line bg-elevated shadow-[0_16px_40px_-15px_rgba(0,0,0,0.6)]">
+                      {failed[shot.src] ? (
+                        <span className="absolute inset-0 flex items-center justify-center text-muted">
+                          <PhoneIcon />
+                        </span>
+                      ) : (
+                        <Image
+                          src={shot.src}
+                          alt={shot.caption ?? `Screenshot mobile ${project.title}`}
+                          fill
+                          sizes="176px"
+                          className="object-cover"
+                          onError={() => setFailed((prev) => ({ ...prev, [shot.src]: true }))}
+                        />
+                      )}
+                    </div>
+                    {shot.caption && (
+                      <p className="mt-3 text-center font-mono text-[11px] text-muted">
+                        {shot.caption}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </ScrollReveal>
+        )}
+
+        {/* ── Project Resources: cuma muncul kalau diisi di data.ts ── */}
+        {resources.length > 0 && (
+          <ScrollReveal>
+            <section className="mt-16" aria-labelledby="resources-title">
+              <h2
+                id="resources-title"
+                className="flex items-center gap-2 font-display text-lg font-semibold text-primary"
+              >
+                <FolderIcon /> Project Resources
+              </h2>
+              <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {resources.map((res) => (
+                  <li key={res.href}>
+                    <ResourceCard resource={res} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </ScrollReveal>
+        )}
 
         {/* ── Tantangan & hasil: cuma muncul kalau diisi di data.ts ── */}
         {(project.challenge || project.outcome) && (
@@ -313,6 +396,36 @@ function SectionTitle({
   );
 }
 
+function ResourceCard({ resource }: { resource: ProjectResource }) {
+  const meta = resourceMeta[resource.type];
+  const external = /^https?:\/\//.test(resource.href);
+  const isDownload = resource.type === "download" && !external;
+
+  return (
+    <a
+      href={resource.href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      {...(isDownload ? { download: true } : {})}
+      className="group flex h-full items-start gap-3 rounded-xl border border-line bg-elevated/50 p-4 transition-colors hover:border-accent"
+    >
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg text-accent">
+        {meta.icon}
+      </span>
+      <span className="min-w-0">
+        <span className="block font-mono text-[11px] text-muted">{meta.tag}</span>
+        <span className="mt-0.5 block font-display text-base font-semibold text-primary transition-colors group-hover:text-accent">
+          {resource.label}
+        </span>
+        {resource.description && (
+          <span className="mt-1 block text-sm leading-relaxed text-muted">
+            {resource.description}
+          </span>
+        )}
+      </span>
+    </a>
+  );
+}
+
 function StoryBlock({ title, text }: { title: string; text: string }) {
   return (
     <div className="rounded-2xl border border-line bg-elevated/40 p-6">
@@ -334,8 +447,9 @@ function NavLink({
   return (
     <Link
       href={`/projects/${project.slug}`}
-      className={`group block max-w-sm rounded-xl border border-line px-5 py-4 transition-colors hover:border-accent ${alignRight ? "sm:ml-auto sm:text-right" : ""
-        }`}
+      className={`group block max-w-sm rounded-xl border border-line px-5 py-4 transition-colors hover:border-accent ${
+        alignRight ? "sm:ml-auto sm:text-right" : ""
+      }`}
     >
       <span className="font-mono text-[11px] text-muted">
         {alignRight ? `${label} →` : `← ${label}`}
@@ -402,6 +516,58 @@ function SparkleIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2" />
+    </svg>
+  );
+}
+function PhoneIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <rect x="6" y="2" width="12" height="20" rx="2" />
+      <line x1="11" y1="18" x2="13" y2="18" />
+    </svg>
+  );
+}
+function FolderIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z" />
+    </svg>
+  );
+}
+function DocIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="8" y1="13" x2="16" y2="13" />
+      <line x1="8" y1="17" x2="14" y2="17" />
+    </svg>
+  );
+}
+function DesignIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M12 19l7-7 3 3-7 7-3-3z" />
+      <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+      <path d="M2 2l7.586 7.586" />
+      <circle cx="11" cy="11" r="2" />
+    </svg>
+  );
+}
+function DownloadIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+function PlayIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="10 8 16 12 10 16 10 8" />
     </svg>
   );
 }

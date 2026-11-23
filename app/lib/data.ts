@@ -4,6 +4,28 @@
 
 export type ProjectStatus = "live" | "private" | "development";
 
+// Jenis resource menentukan ikon + label kecil di kartu Project Resources
+export type ResourceType =
+  | "docs"      // dokumentasi, README, laporan
+  | "design"    // Figma, wireframe, ERD
+  | "download"  // APK, file PDF
+  | "video"     // video demo
+  | "github"
+  | "demo"
+  | "other";
+
+export type ProjectResource = {
+  label: string;        // contoh: "Desain UI di Figma"
+  href: string;         // link eksternal (https://...) atau file di /public (/assets/...)
+  type: ResourceType;
+  description?: string; // satu kalimat singkat, opsional
+};
+
+export type MobileScreenshot = {
+  src: string;      // contoh: "/assets/images/project/koperasi-mobile-1.webp"
+  caption?: string; // contoh: "Beranda anggota"
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -14,14 +36,16 @@ export type Project = {
   link?: string;         // live demo
   github?: string;
 
-  // ── Field baru, semuanya opsional: kalau gak diisi, bagiannya otomatis gak tampil ──
+  // ── Field opsional: kalau gak diisi, bagiannya otomatis gak tampil ──
   role?: string;          // contoh: "Fullstack Developer"
   year?: string;          // contoh: "2025"
   status?: ProjectStatus; // "live" | "private" | "development"
   privateNote?: string;   // keterangan kalau demo & source code gak dipublikasikan
   challenge?: string;     // tantangan teknis yang dihadapi
   outcome?: string;       // hasil / dampak project
-  gallery?: string[];     // screenshot tambahan (gambar utama tetap pakai `image`)
+  gallery?: string[];     // screenshot web tambahan (gambar utama tetap pakai `image`)
+  mobileScreenshots?: MobileScreenshot[]; // isi kalau project punya versi aplikasi mobile
+  resources?: ProjectResource[];          // bagian "Project Resources"
 };
 
 export const projects: Project[] = [
@@ -29,12 +53,14 @@ export const projects: Project[] = [
     slug: "Portofolio",
     title: "Portofolio Rizky Alfath",
     description:
-      "Website portofolio pribadi yang dibangun menggunakan Next.js dan TypeScript untuk menampilkan proyek, pengalaman, keterampilan, dan informasi kontak dengan desain modern, responsif, serta interaktif.",
-    tags: ["Next.js", "TypeScript", "Tailwind CSS"],
+      "Website portofolio pribadi yang dibangun menggunakan Next.js dan TypeScript untuk menampilkan proyek, pengalaman, keterampilan, dan informasi kontak dengan tampilan yang responsif dan interaktif.",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "Three.js"],
     features: [
-      "Website full animasi",
-      "Desain modern dan elegan",
-      "Fully responsive di semua device",
+      "Animasi scroll reveal dan transisi antar section",
+      "Elemen 3D interaktif di bagian hero",
+      "Tema gelap dan terang",
+      "Tampilan responsif untuk mobile, tablet, dan desktop",
+      "Konten project, skill, dan sertifikat dikelola dari satu file data",
     ],
     image: "/assets/images/project/porto-alfath.webp",
     link: undefined,
@@ -45,18 +71,21 @@ export const projects: Project[] = [
     // challenge: "...",
     // outcome: "...",
     // gallery: ["/assets/images/project/porto-alfath-2.webp"],
+    // resources: [
+    //   { label: "Desain UI di Figma", href: "https://www.figma.com/...", type: "design" },
+    // ],
   },
   {
     slug: "Koperasi-Sekolah",
     title: "Sistem Koperasi Sekolah",
     description:
-      "Sistem koperasi simpan pinjam berbasis web dan mobile yang terdiri dari dashboard admin menggunakan Django, REST API, dan aplikasi Flutter untuk anggota koperasi. Mendukung pengelolaan anggota, transaksi simpan pinjam, riwayat transaksi, serta sinkronisasi data antara aplikasi web dan mobile.",
+      "Sistem koperasi simpan pinjam yang terdiri dari dashboard admin berbasis web (Django) dan aplikasi mobile untuk anggota (Flutter). Keduanya terhubung lewat REST API untuk mengelola data anggota, transaksi simpan pinjam, dan riwayat transaksi.",
     tags: ["Flutter", "Django", "REST API", "MySQL", "Bootstrap"],
     features: [
       "Dashboard admin berbasis Django",
       "Aplikasi mobile untuk anggota (Flutter)",
-      "Sinkronisasi data real-time via REST API",
-      "Riwayat transaksi simpan pinjam lengkap",
+      "Data tersinkron antara dashboard admin dan aplikasi mobile lewat REST API",
+      "Riwayat transaksi simpan dan pinjam",
     ],
     image: "/assets/images/project/koperasi.webp",
     github: undefined,
@@ -68,6 +97,14 @@ export const projects: Project[] = [
     // challenge: "...",
     // outcome: "...",
     // gallery: ["/assets/images/project/koperasi-2.webp"],
+    // mobileScreenshots: [
+    //   { src: "/assets/images/project/koperasi-mobile-1.webp", caption: "Beranda anggota" },
+    //   { src: "/assets/images/project/koperasi-mobile-2.webp", caption: "Riwayat transaksi" },
+    // ],
+    // resources: [
+    //   { label: "Desain database (ERD)", href: "/assets/docs/koperasi-erd.pdf", type: "docs" },
+    //   { label: "APK aplikasi anggota", href: "/assets/apk/koperasi.apk", type: "download" },
+    // ],
   },
   // {
   //   slug: "perpustakaan-sekolah",
