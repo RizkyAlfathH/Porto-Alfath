@@ -26,7 +26,7 @@ export default function Contact() {
 
       <div className="relative z-10 mx-auto max-w-2xl text-center">
         <ScrollReveal>
-          <p className="font-mono text-sm text-accent">{"// 06 contact"}</p>
+          <p className="font-mono text-sm text-accent">{"// 05 contact"}</p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
@@ -39,7 +39,7 @@ export default function Contact() {
           <p className="mt-4 text-muted">
             Lagi cari kesempatan magang atau kerja pertama di bidang frontend.
             Kalau ada peluang atau cuma mau ngobrol soal project, jangan ragu
-            buat kontak aku lewat email atau media sosial di bawah.
+            buat kontak saya lewat email atau media sosial di bawah.
           </p>
         </ScrollReveal>
 

@@ -67,7 +67,7 @@ export const projects: Project[] = [
     github: undefined,
     // role: "...",
     // year: "...",
-    // status: "development",
+    status: "development",
     // challenge: "...",
     // outcome: "...",
     // gallery: ["/assets/images/project/porto-alfath-2.webp"],
@@ -87,20 +87,26 @@ export const projects: Project[] = [
       "Data tersinkron antara dashboard admin dan aplikasi mobile lewat REST API",
       "Riwayat transaksi simpan dan pinjam",
     ],
-    image: "/assets/images/project/koperasi.webp",
+    image: "/assets/images/project/koperasi/login_web_koperasi.webp",
     github: undefined,
     status: "private",
     privateNote:
       "Sistem ini dipakai langsung oleh pihak sekolah, jadi demo dan source code tidak dipublikasikan.",
-    // role: "...",
-    // year: "...",
-    // challenge: "...",
-    // outcome: "...",
-    // gallery: ["/assets/images/project/koperasi-2.webp"],
-    // mobileScreenshots: [
-    //   { src: "/assets/images/project/koperasi-mobile-1.webp", caption: "Beranda anggota" },
-    //   { src: "/assets/images/project/koperasi-mobile-2.webp", caption: "Riwayat transaksi" },
-    // ],
+    role: "Full Stack Developer",
+    year: "2025",
+    challenge:
+      "Ini pertama kalinya saya memakai Django, jadi saya belajar sambil membangun: mulai dari struktur project, model dan migrasi database, sampai membuat REST API yang dipakai aplikasi Flutter. Tantangan lainnya adalah menjaga data anggota dan transaksi tetap konsisten antara dashboard web dan aplikasi mobile.",
+    outcome:
+      "Sistem selesai dan diserahkan resmi ke pihak sekolah untuk dipakai mengelola simpan pinjam koperasi. Dari project ini saya jadi terbiasa dengan Django, dan kemudian memakainya lagi saat PKL.",
+    gallery: [
+      "/assets/images/project/koperasi/db_web_koperasi.webp",
+      "/assets/images/project/koperasi/db_web_koperasi-2.webp",
+      "/assets/images/project/koperasi/db_web_koperasi-3.webp",
+    ],
+    mobileScreenshots: [
+      { src: "/assets/images/project/koperasi/mobile/koperasi-mobile-1.webp", caption: "Login" },
+      { src: "/assets/images/project/koperasi/mobile/koperasi-mobile-2.webp", caption: "Beranda anggota" },
+    ],
     // resources: [
     //   { label: "Desain database (ERD)", href: "/assets/docs/koperasi-erd.pdf", type: "docs" },
     //   { label: "APK aplikasi anggota", href: "/assets/apk/koperasi.apk", type: "download" },
@@ -200,41 +206,48 @@ export const certificates: Certificate[] = [
   },
 ];
 
+// Tingkat penguasaan skill — menentukan di kartu mana skill tampil di section Skills:
+//  "primary"  → Primary Skills: sering dipakai di project/PKL dan siap dijelaskan saat interview
+//  "familiar" → Familiar With: pernah dipakai, belum sedalam skill utama
+//  "learning" → Currently Learning: sedang dipelajari sekarang
+export type SkillLevel = "primary" | "familiar" | "learning";
+
 export type Skill = {
   name: string;
   category: "frontend" | "backend" | "mobile" | "tools";
+  level: SkillLevel;
 };
 
 export const skills: Skill[] = [
   // Frontend
-  { name: "HTML5", category: "frontend" },
-  { name: "CSS3", category: "frontend" },
-  { name: "JavaScript", category: "frontend" },
-  { name: "TypeScript", category: "frontend" },
-  { name: "Next.js", category: "frontend" },
-  { name: "React", category: "frontend" },
-  { name: "Tailwind CSS", category: "frontend" },
+  { name: "HTML5", category: "frontend", level: "primary" },
+  { name: "CSS3", category: "frontend", level: "primary" },
+  { name: "JavaScript", category: "frontend", level: "primary" },
+  { name: "TypeScript", category: "frontend", level: "learning" },
+  { name: "Next.js", category: "frontend", level: "learning" },
+  { name: "React", category: "frontend", level: "learning" },
+  { name: "Tailwind CSS", category: "frontend", level: "familiar" },
 
   // Backend
-  { name: "Django", category: "backend" },
-  { name: "Laravel", category: "backend" },
-  { name: "PHP", category: "backend" },
-  { name: "Python", category: "backend" },
-  { name: "REST API", category: "backend" },
-  { name: "MySQL", category: "backend" },
-  { name: "PostgreSQL", category: "backend" },
-  { name: "Firebase", category: "backend" },
+  { name: "Django", category: "backend", level: "primary" },
+  { name: "Laravel", category: "backend", level: "primary" },
+  { name: "PHP", category: "backend", level: "primary" },
+  { name: "Python", category: "backend", level: "primary" },
+  { name: "REST API", category: "backend", level: "familiar" },
+  { name: "MySQL", category: "backend", level: "familiar" },
+  { name: "PostgreSQL", category: "backend", level: "primary" },
+  { name: "Firebase", category: "backend", level: "familiar" },
 
   // Mobile
-  { name: "Flutter", category: "mobile" },
-  { name: "Dart", category: "mobile" },
+  { name: "Flutter", category: "mobile", level: "familiar" },
+  { name: "Dart", category: "mobile", level: "familiar" },
 
   // Tools
-  { name: "Git", category: "tools" },
-  { name: "GitHub", category: "tools" },
-  { name: "VS Code", category: "tools" },
-  { name: "Figma", category: "tools" },
-  { name: "Postman", category: "tools" },
+  { name: "Git", category: "tools", level: "familiar" },
+  { name: "GitHub", category: "tools", level: "familiar" },
+  { name: "VS Code", category: "tools", level: "familiar" },
+  { name: "Figma", category: "tools", level: "familiar" },
+  { name: "Postman", category: "tools", level: "familiar" },
 ];
 
 export type Experience = {
@@ -242,6 +255,7 @@ export type Experience = {
   organization: string;
   period: string;
   description: string;
+  points?: string[]; // poin tanggung jawab & kontribusi nyata, tampil sebagai bullet di bawah description
   type: "pkl" | "organisasi" | "lomba" | "sekolah" | "bootcamp" | "lainnya";
   image?: string; // contoh: "/experience/pkl-1.jpg"
 };
@@ -252,7 +266,14 @@ export const experiences: Experience[] = [
     organization: "PT Khatulistiwa Nusantara Indonesia",
     period: "Okt 2025 — Jan 2026",
     description:
-      "Berkontribusi dalam pengembangan sistem ERP pada modul Human Resource menggunakan Django, PostgreSQL, dan Bootstrap. Mengembangkan fitur Payroll mulai dari perancangan antarmuka pengguna, implementasi logika backend untuk perhitungan gaji, pembuatan function dan stored procedure di PostgreSQL, hingga fitur generate slip gaji karyawan dalam format PDF secara otomatis.",
+      "PKL empat bulan di tim Payroll, mengembangkan modul Human Resource pada sistem ERP perusahaan menggunakan Django, PostgreSQL, dan Bootstrap.",
+    points: [
+      "Merancang antarmuka dan membuat halaman gaji karyawan, lengkap dengan filter gaji pokok dan tunjangan.",
+      "Membuat perhitungan lembur per jam secara otomatis. Admin hanya menginput nilai dan item gaji, hitungannya dilakukan sistem.",
+      "Menulis function dan stored procedure di PostgreSQL untuk perhitungan gaji.",
+      "Membuat fitur slip gaji dalam format PDF yang mengikuti template perusahaan.",
+      "Bekerja dalam tim 4 orang yang terbagi di dua divisi (Payroll dan SDM), memakai GitLab dengan code review mingguan sebelum merge request.",
+    ],
     type: "pkl",
     image: "/assets/images/experience/PKL.webp",
   },
@@ -261,7 +282,7 @@ export const experiences: Experience[] = [
     organization: "PT Telkom Indonesia & PT Telkom Prima Cipta Certifia",
     period: "Nov 2024",
     description:
-      "Mengikuti pelatihan intensif Internet of Things (IoT), mulai dari konsep dasar sensor dan mikrokontroler hingga implementasi nyata. Berhasil membangun sistem monitoring suhu ruangan server sekolah secara real-time menggunakan sensor suhu yang terhubung ke dashboard.",
+      "Mengikuti pelatihan intensif Internet of Things (IoT), mulai dari konsep dasar sensor dan mikrokontroler hingga implementasi nyata. Berhasil membangun sistem monitoring suhu ruangan server sekolah menggunakan sensor suhu yang datanya tampil di dashboard.",
     type: "bootcamp",
     image: "/assets/images/experience/Iot.webp",
   },

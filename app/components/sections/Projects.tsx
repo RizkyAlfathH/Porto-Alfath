@@ -88,19 +88,19 @@ export default function Projects() {
 
       <div className="relative z-10">
         <ScrollReveal>
-          <p className="font-mono text-sm text-accent">{"// 02 projects"}</p>
+          <p className="font-mono text-sm text-accent">{"// 04 projects"}</p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
           <h2 className="mt-6 font-display text-3xl font-semibold text-primary md:text-4xl">
-            Project & sertifikat yang pernah aku dapetin
+            Project & sertifikat yang pernah saya dapetin
           </h2>
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
           <p className="mt-4 max-w-xl text-muted">
             Beberapa project dari tugas sekolah, PKL, eksplorasi pribadi, dan
-            sertifikat yang pernah aku kumpulin. Klik card buat lihat detail
+            sertifikat yang pernah saya kumpulin. Klik card buat lihat detail
             lengkapnya.
           </p>
         </ScrollReveal>

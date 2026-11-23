@@ -3,29 +3,28 @@
 import { useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring, useTransform } from "framer-motion";
 import ScrollReveal from "@/app/components/reactbits/ScrollReveal";
-import { profile } from "@/app/lib/data";
 
 const mainSteps = [
-  { year: "Awal", title: "C#", desc: "Bahasa pertama yang aku pelajari, dari sini aku ngerti dasar logika pemrograman & OOP sebelum masuk ke web." },
+  { year: "Awal", title: "C#", desc: "Bahasa pertama yang saya pelajari, dari sini saya ngerti dasar logika pemrograman & OOP sebelum masuk ke web." },
   { year: "Lanjut", title: "HTML & CSS statis", desc: "Mulai masuk dunia web, belajar struktur halaman dan styling dari nol tanpa framework apa pun." },
   { year: "Lanjut", title: "PHP Native", desc: "Belajar server-side programming, ngerti alur request-response secara manual sebelum kenal framework." },
   { year: "Lanjut", title: "Laravel", desc: "Pindah ke framework, mulai paham struktur project yang lebih rapi: routing, MVC, dan migration." },
-  { year: "Lanjut", title: "Python & Django", desc: "Eksplorasi ekosistem lain di luar PHP, belajar pendekatan backend yang beda gaya." },
-  { year: "2026", title: "Next.js & TypeScript", desc: "Fokus sekarang: membangun web modern yang cepat, rapi, dan type-safe pakai React ecosystem." },
+  { year: "Lanjut", title: "Python & Django", desc: "Eksplorasi ekosistem lain di luar PHP. Pertama kali saya pakai di project Koperasi Sekolah, lalu dipakai lagi untuk modul Payroll saat PKL." },
+  { year: "2026", title: "Next.js & TypeScript", desc: "Fokus sekarang: membangun web modern yang cepat, rapi, dan type-safe pakai React ecosystem. Portofolio ini jadi tempat latihannya." },
 ] as const;
 
 const branchStep = {
   year: "Eksplorasi",
   title: "IoT & Arduino",
-  desc: "Di tengah jalan aku sempat coba ranah hardware — ngoprek sensor & mikrokontroler. Bukan jalur utama, tapi bukti aku suka eksplorasi di luar comfort zone.",
+  desc: "Di tengah jalan saya sempat coba ranah hardware — ngoprek sensor & mikrokontroler. Bukan jalur utama, tapi bukti saya suka eksplorasi di luar comfort zone.",
   afterIndex: 3, // muncul sebagai cabang setelah "Laravel" (index 3), sebelum "Python & Django"
 };
 
 const facts = [
   { label: "Status", value: "Open to work", accent: true },
-  { label: "Fokus", value: "Frontend Web Dev" },
-  { label: "Pendidikan", value: "SMK — RPL" },
-  { label: "Lokasi", value: "Indonesia" },
+  { label: "Fokus", value: "Full Stack Web Dev" },
+  { label: "Pendidikan", value: "SMKN 11 Bandung, RPL (2023–2026)" },
+  { label: "Lokasi", value: "Bandung, Jawa Barat" },
 ];
 
 const floatingBubbles = [
@@ -62,12 +61,21 @@ export default function About() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <p className="mt-6 text-base leading-relaxed text-muted md:text-lg">
-                Aku {profile.name}, baru lulus dari jurusan Rekayasa Perangkat
-                Lunak (RPL) dan fokus membangun antarmuka web yang rapi, cepat,
-                dan enak dipakai. Sekarang aku lagi cari kesempatan buat terus
-                belajar sambil kerja di tim frontend/web development.
-              </p>
+              <div className="mt-6 space-y-4 text-base leading-relaxed text-muted md:text-lg">
+                <p>
+                  Saya Rizky Alfath, lulusan SMK Negeri 11 Bandung jurusan Rekayasa
+                  Perangkat Lunak. Selama PKL empat bulan di PT Khatulistiwa
+                  Nusantara Indonesia, saya mengerjakan modul Payroll pada sistem
+                  ERP memakai Django dan PostgreSQL.
+                </p>
+                <p>
+                  Di luar PKL, saya membangun sistem koperasi sekolah dengan
+                  Django dan Flutter, dan sekarang memperdalam Next.js dan
+                  TypeScript lewat portofolio ini. Saya mencari posisi web
+                  developer tempat saya bisa terus belajar sambil bekerja dalam
+                  tim.
+                </p>
+              </div>
             </ScrollReveal>
 
             <div className="mt-10 flex flex-col gap-2.5">

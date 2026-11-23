@@ -3,8 +3,8 @@
 import { motion } from "framer-motion";
 import ScrollReveal from "@/app/components/reactbits/ScrollReveal";
 import SkillTile from "@/app/components/skills/SkillTile";
-import { skills } from "@/app/lib/data";
-import { Layout, Server, Smartphone, Wrench, type LucideIcon } from "lucide-react";
+import { skills, type SkillLevel } from "@/app/lib/data";
+import { BookOpen, Layers, Server, Star, type LucideIcon } from "lucide-react";
 import type { IconType } from "react-icons";
 import {
   SiHtml5,
@@ -30,18 +30,25 @@ import {
 } from "react-icons/si";
 import { VscVscode } from "react-icons/vsc";
 
-const categoryLabels: Record<string, string> = {
-  frontend: "Frontend",
-  backend: "Backend",
-  mobile: "Mobile",
-  tools: "Tools & Workflow",
-};
+// Urutan kartu = urutan di array ini. Skill-nya dikelompokkan lewat field `level` di lib/data.ts
+const levelOrder: SkillLevel[] = ["primary", "familiar", "learning"];
 
-const categoryIcons: Record<string, LucideIcon> = {
-  frontend: Layout,
-  backend: Server,
-  mobile: Smartphone,
-  tools: Wrench,
+const levelMeta: Record<SkillLevel, { label: string; hint: string; icon: LucideIcon }> = {
+  primary: {
+    label: "Primary Skills",
+    hint: "Sering saya pakai di project dan PKL.",
+    icon: Star,
+  },
+  familiar: {
+    label: "Familiar With",
+    hint: "Pernah dipakai, belum sedalam skill utama.",
+    icon: Layers,
+  },
+  learning: {
+    label: "Currently Learning",
+    hint: "Sedang saya dalami sekarang.",
+    icon: BookOpen,
+  },
 };
 
 // Icon & warna brand asli tiap skill biar langsung kekenalan
@@ -76,11 +83,10 @@ const floatingBubbles = [
 ];
 
 export default function Skills() {
-  // Kelompokin skill berdasarkan kategori biar ga numpuk jadi satu list panjang
-  const grouped = skills.reduce<Record<string, typeof skills>>((acc, skill) => {
-    (acc[skill.category] ||= []).push(skill);
-    return acc;
-  }, {});
+  // Kelompokin skill berdasarkan level, kartu yang kosong gak ditampilkan
+  const groups = levelOrder
+    .map((level) => ({ level, items: skills.filter((s) => s.level === level) }))
+    .filter((g) => g.items.length > 0);
 
   return (
     <section id="skills" className="relative overflow-hidden px-6 py-24 md:px-16 lg:px-24">
@@ -98,29 +104,28 @@ export default function Skills() {
 
         <ScrollReveal delay={0.1}>
           <h2 className="mt-6 font-display text-3xl font-semibold text-primary md:text-4xl">
-            Tools yang aku pakai
+            Skill dan teknologi
           </h2>
         </ScrollReveal>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(grouped).map(([category, items], groupIndex) => {
-            const CategoryIcon = categoryIcons[category] ?? Layout;
+        <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {groups.map(({ level, items }, groupIndex) => {
+            const { label, hint, icon: LevelIcon } = levelMeta[level];
 
             return (
-              <ScrollReveal key={category} delay={0.1 * groupIndex}>
+              <ScrollReveal key={level} delay={0.1 * groupIndex}>
                 <motion.div
                   whileHover={{ y: -4, borderColor: "var(--color-accent)" }}
                   transition={{ duration: 0.2 }}
                   className="h-full rounded-2xl border border-line bg-elevated/60 p-6 backdrop-blur-sm"
                 >
-                  <div className="mb-6 flex items-center gap-2.5">
+                  <div className="flex items-center gap-2.5">
                     <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/10 text-accent">
-                      <CategoryIcon className="h-4 w-4" />
+                      <LevelIcon className="h-4 w-4" />
                     </span>
-                    <h3 className="font-mono text-sm uppercase tracking-wide text-muted">
-                      {categoryLabels[category] ?? category}
-                    </h3>
+                    <h3 className="font-mono text-sm uppercase tracking-wide text-muted">{label}</h3>
                   </div>
+                  <p className="mb-6 mt-3 text-xs leading-relaxed text-muted/70">{hint}</p>
 
                   <div className="grid grid-cols-2 gap-3">
                     {items.map((skill) => {

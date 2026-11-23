@@ -33,7 +33,7 @@ export default function ExperienceSection() {
 
       <div className="relative z-10 mx-auto max-w-6xl">
         <ScrollReveal>
-          <p className="font-mono text-sm text-accent">{"// 04 experience"}</p>
+          <p className="font-mono text-sm text-accent">{"// 02 experience"}</p>
         </ScrollReveal>
 
         <ScrollReveal delay={0.1}>
@@ -103,7 +103,9 @@ function ExperienceLayout() {
   );
 }
 
-/* ── Foto yang crossfade sesuai entry aktif, dibungkus kayak polaroid ── */
+/* ── Foto yang crossfade sesuai entry aktif, dibungkus kayak polaroid.
+      Teks role/organisasi/periode sengaja gak diulang di sini —
+      semuanya sudah ada di entry timeline, jadi cukup foto + label tipe. ── */
 function StickyPhoto({ exp }: { exp: Experience }) {
   if (!exp.image) return null;
 
@@ -132,23 +134,19 @@ function StickyPhoto({ exp }: { exp: Experience }) {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0"
             >
-              <Image src={exp.image} alt={exp.role} fill sizes="340px" className="object-cover" />
+              <Image
+                src={exp.image}
+                alt={`Foto ${exp.role} di ${exp.organization}`}
+                fill
+                sizes="340px"
+                className="object-cover"
+              />
             </motion.div>
           </AnimatePresence>
-
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg via-bg/10 to-transparent" />
 
           <span className="absolute right-3 top-3 rounded-full border border-line/60 bg-bg/60 px-3 py-1 font-mono text-[10px] uppercase tracking-wider text-warm backdrop-blur-md">
             {typeLabels[exp.type] ?? exp.type}
           </span>
-
-          <div className="absolute inset-x-0 bottom-0 p-5">
-            <p className="font-mono text-[10px] uppercase tracking-wider text-accent">{exp.period}</p>
-            <p className="mt-1.5 font-display text-base font-semibold leading-snug text-primary">
-              {exp.role}
-            </p>
-            <p className="mt-1 font-mono text-xs text-muted">{exp.organization}</p>
-          </div>
         </div>
       </motion.div>
     </div>
@@ -225,11 +223,19 @@ function BranchEntry({ exp }: { exp: Experience }) {
 
 /* ── Isi konten entry, dipakai bareng oleh MainEntry & BranchEntry ── */
 function EntryContent({ exp, accentClass }: { exp: Experience; accentClass?: string }) {
+  const bulletDot = accentClass ? "bg-warm" : "bg-accent";
+
   return (
     <div className="flex gap-4">
       {exp.image && (
         <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-line lg:hidden">
-          <Image src={exp.image} alt={exp.role} fill sizes="56px" className="object-cover" />
+          <Image
+            src={exp.image}
+            alt={`Foto ${exp.role} di ${exp.organization}`}
+            fill
+            sizes="56px"
+            className="object-cover"
+          />
         </div>
       )}
 
@@ -249,6 +255,17 @@ function EntryContent({ exp, accentClass }: { exp: Experience; accentClass?: str
 
         <p className="mt-1 font-mono text-sm text-muted">{exp.organization}</p>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{exp.description}</p>
+
+        {exp.points && exp.points.length > 0 && (
+          <ul className="mt-4 max-w-2xl space-y-2.5">
+            {exp.points.map((point) => (
+              <li key={point} className="flex items-start gap-2.5 text-sm leading-relaxed text-muted">
+                <span className={`mt-2 h-1 w-1 shrink-0 rounded-full ${bulletDot}`} />
+                {point}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
