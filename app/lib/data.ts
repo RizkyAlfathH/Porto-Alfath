@@ -2,6 +2,8 @@
 // Jadi kalau mau update project/skill baru, cukup edit file ini,
 // gak perlu bongkar komponen.
 
+export type ProjectStatus = "live" | "private" | "development";
+
 export type Project = {
   slug: string;
   title: string;
@@ -11,6 +13,15 @@ export type Project = {
   image: string;         // path di /public/images/projects/ — kalau belum ada, biarin aja kosong dulu
   link?: string;         // live demo
   github?: string;
+
+  // ── Field baru, semuanya opsional: kalau gak diisi, bagiannya otomatis gak tampil ──
+  role?: string;          // contoh: "Fullstack Developer"
+  year?: string;          // contoh: "2025"
+  status?: ProjectStatus; // "live" | "private" | "development"
+  privateNote?: string;   // keterangan kalau demo & source code gak dipublikasikan
+  challenge?: string;     // tantangan teknis yang dihadapi
+  outcome?: string;       // hasil / dampak project
+  gallery?: string[];     // screenshot tambahan (gambar utama tetap pakai `image`)
 };
 
 export const projects: Project[] = [
@@ -28,6 +39,12 @@ export const projects: Project[] = [
     image: "/assets/images/project/porto-alfath.webp",
     link: undefined,
     github: undefined,
+    // role: "...",
+    // year: "...",
+    // status: "development",
+    // challenge: "...",
+    // outcome: "...",
+    // gallery: ["/assets/images/project/porto-alfath-2.webp"],
   },
   {
     slug: "Koperasi-Sekolah",
@@ -43,6 +60,14 @@ export const projects: Project[] = [
     ],
     image: "/assets/images/project/koperasi.webp",
     github: undefined,
+    status: "private",
+    privateNote:
+      "Sistem ini dipakai langsung oleh pihak sekolah, jadi demo dan source code tidak dipublikasikan.",
+    // role: "...",
+    // year: "...",
+    // challenge: "...",
+    // outcome: "...",
+    // gallery: ["/assets/images/project/koperasi-2.webp"],
   },
   // {
   //   slug: "perpustakaan-sekolah",
@@ -222,7 +247,6 @@ export const profile = {
   email: "rizkyalfath80@gmail.com",
   github: "https://github.com/RizkyAlfathH",
   linkedin: "https://www.linkedin.com/in/rizky-alfath-humaedi-6b6944331?utm_source=share_via&utm_content=profile&utm_medium=member_android",
-  instagram: "https://instagram.com/USERNAME_KAMU", // ganti sesuai akun asli
-  tiktok: "https://tiktok.com/@USERNAME_KAMU", // ganti sesuai akun asli
-  resume: "assets/cv/CV_Rizky_Alfath_Humaedi.pdf", // kalau ada resume PDF, taruh linknya di sini
+  instagram: "https://instagram.com/_rzpath", // ganti sesuai akun asli
+  resume: "/assets/cv/CV_Rizky_Alfath_Humaedi.pdf", // kalau ada resume PDF, taruh linknya di sini
 };

@@ -2,7 +2,7 @@
 import { motion } from "framer-motion";
 import { Mail, FileDown } from "lucide-react";
 import { SiGithub } from "@icons-pack/react-simple-icons";
-import { FaLinkedinIn, FaInstagram, FaTiktok } from "react-icons/fa6";
+import { FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 import ScrollReveal from "@/app/components/reactbits/ScrollReveal";
 import { profile } from "@/app/lib/data";
 
@@ -62,9 +62,6 @@ export default function Contact() {
             </IconLink>
             <IconLink href={profile.instagram} label="Instagram" external>
               <FaInstagram size={20} strokeWidth={1.8} />
-            </IconLink>
-            <IconLink href={profile.tiktok} label="TikTok" external>
-              <FaTiktok size={18} strokeWidth={1.8} />
             </IconLink>
             <IconLink href={profile.resume} label="Resume" download>
               <FileDown size={20} strokeWidth={1.8} />

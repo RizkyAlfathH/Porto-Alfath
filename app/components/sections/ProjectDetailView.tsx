@@ -1,17 +1,24 @@
-// app/components/ProjectDetailView.tsx
+// app/components/sections/ProjectDetailView.tsx
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import type { IconType } from "react-icons";
 import {
   SiNextdotjs,
   SiTypescript,
+  SiJavascript,
+  SiHtml5,
+  SiCss,
   SiTailwindcss,
   SiFlutter,
+  SiDart,
   SiDjango,
+  SiPython,
   SiMysql,
+  SiPostgresql,
+  SiFirebase,
   SiBootstrap,
   SiLaravel,
   SiReact,
@@ -23,14 +30,22 @@ import { DriftingOrbs, SectionWatermark } from "@/app/components/reactbits/Secti
 import BrowserMockup from "@/app/components/reactbits/BrowserMockup";
 import type { Project } from "@/app/lib/data";
 
-// Mapping nama tech (harus persis sama kayak string di `tags` di lib/data.ts) ke icon brand asli
+// Nama tech harus persis sama dengan string di `tags` (lib/data.ts).
+// Kalau gak ada di sini, otomatis pakai ikon kubus generik.
 const techIconMap: Record<string, IconType> = {
   "Next.js": SiNextdotjs,
   "TypeScript": SiTypescript,
+  "JavaScript": SiJavascript,
+  "HTML5": SiHtml5,
+  "CSS3": SiCss,
   "Tailwind CSS": SiTailwindcss,
   "Flutter": SiFlutter,
+  "Dart": SiDart,
   "Django": SiDjango,
+  "Python": SiPython,
   "MySQL": SiMysql,
+  "PostgreSQL": SiPostgresql,
+  "Firebase": SiFirebase,
   "Bootstrap": SiBootstrap,
   "Laravel": SiLaravel,
   "React": SiReact,
@@ -38,126 +53,201 @@ const techIconMap: Record<string, IconType> = {
   "REST API": TbApi,
 };
 
-export default function ProjectDetailView({ project }: { project: Project }) {
+const statusMap = {
+  live: { label: "Online", dot: "bg-emerald-400" },
+  private: { label: "Internal, tidak publik", dot: "bg-warm" },
+  development: { label: "Dalam pengembangan", dot: "bg-accent" },
+} as const;
+
+type NavProject = Pick<Project, "slug" | "title">;
+
+type Props = {
+  project: Project;
+  prev?: NavProject;
+  next?: NavProject;
+};
+
+export default function ProjectDetailView({ project, prev, next }: Props) {
+  const images = [project.image, ...(project.gallery ?? [])].filter(Boolean);
+  const [active, setActive] = useState(0);
+  const [failed, setFailed] = useState<Record<string, boolean>>({});
+
+  const current = images[active];
+  const showImage = Boolean(current) && !failed[current];
+
   const techCount = project.tags?.length ?? 0;
   const featureCount = project.features?.length ?? 0;
+  const hasLinks = Boolean(project.link || project.github);
+  const status = project.status ? statusMap[project.status] : undefined;
+
+  const meta = [
+    { label: "Peran", value: project.role },
+    { label: "Tahun", value: project.year },
+  ].filter((item) => item.value);
 
   return (
-    <main className="relative min-h-screen overflow-hidden px-6 py-24 md:px-16 lg:px-24">
+    <main className="relative min-h-screen overflow-clip px-6 py-24 md:px-16 lg:px-24">
       <DriftingOrbs />
       <SectionWatermark text="WORK" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
-        <ScrollReveal>
-          <Link
-            href="/#projects"
-            className="inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-accent"
-          >
-            ← Back
-          </Link>
-        </ScrollReveal>
+        <Link
+          href="/#projects"
+          className="inline-flex items-center gap-2 font-mono text-sm text-muted transition-colors hover:text-accent"
+        >
+          ← Kembali ke daftar project
+        </Link>
 
         <div className="mt-10 grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.15fr] lg:gap-16">
           {/* ── Kolom kiri: info ── */}
           <div>
-            <ScrollReveal delay={0.05}>
-              <h1 className="font-display text-3xl font-bold text-primary md:text-4xl">
-                {project.title}
-              </h1>
-              <div className="mt-3 h-px w-16 bg-accent" />
-            </ScrollReveal>
-
-            <ScrollReveal delay={0.1}>
+            <ScrollReveal>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <h1 className="font-display text-3xl font-bold text-primary md:text-4xl">
+                  {project.title}
+                </h1>
+              </div>
+              {status && (
+                <span className="mt-4 inline-flex items-center gap-2 rounded-full border border-line bg-elevated/60 px-3 py-1 font-mono text-xs text-muted">
+                  <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
+                  {status.label}
+                </span>
+              )}
+              <div className="mt-4 h-px w-16 bg-accent" />
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-muted md:text-base">
                 {project.description}
               </p>
             </ScrollReveal>
 
-            {/* Stat cards */}
-            <ScrollReveal delay={0.15}>
-              <div className="mt-8 grid grid-cols-2 gap-4">
-                <StatCard icon={<CodeIcon />} value={techCount} label="Technologies Used" />
-                <StatCard icon={<LayersIcon />} value={featureCount} label="Key Features" />
+            {/* Info singkat: hanya tampil kalau datanya diisi */}
+            {meta.length > 0 && (
+              <ScrollReveal delay={0.05}>
+                <dl className="mt-8 grid max-w-xl grid-cols-2 gap-px overflow-hidden rounded-xl border border-line bg-line">
+                  {meta.map((item) => (
+                    <div key={item.label} className="bg-elevated/80 p-4">
+                      <dt className="font-mono text-[11px] text-muted">{item.label}</dt>
+                      <dd className="mt-1 font-display text-base font-semibold text-primary">
+                        {item.value}
+                      </dd>
+                    </div>
+                  ))}
+                </dl>
+              </ScrollReveal>
+            )}
+
+            {/* Link: tombol cuma muncul kalau linknya ada */}
+            <ScrollReveal delay={0.1}>
+              <div className="mt-6">
+                {hasLinks ? (
+                  <div className="flex flex-wrap gap-3">
+                    {project.link && (
+                      <LinkButton href={project.link} icon={<ExternalIcon />} label="Live Demo" />
+                    )}
+                    {project.github && (
+                      <LinkButton href={project.github} icon={<GitIcon />} label="Source Code" />
+                    )}
+                  </div>
+                ) : (
+                  <p className="max-w-xl rounded-xl border border-dashed border-line px-4 py-3 text-sm leading-relaxed text-muted">
+                    {project.privateNote ?? "Demo dan source code project ini belum dipublikasikan."}
+                  </p>
+                )}
               </div>
             </ScrollReveal>
 
-            {/* Link buttons */}
-            <ScrollReveal delay={0.2}>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <LinkButton href={project.link} icon={<ExternalIcon />} label="Live Demo" />
-                <LinkButton href={project.github} icon={<GitIcon />} label="Source Code" />
-              </div>
-            </ScrollReveal>
-
-            {/* Technologies used */}
+            {/* Teknologi */}
             {techCount > 0 && (
-              <ScrollReveal delay={0.25}>
+              <ScrollReveal delay={0.15}>
                 <div className="mt-10">
-                  <h3 className="flex items-center gap-2 font-mono text-sm font-semibold text-primary">
-                    <CodeIcon /> Technologies Used
-                  </h3>
-                  <div className="mt-4 flex flex-wrap gap-2.5">
+                  <SectionTitle icon={<CodeIcon />} label={`Teknologi (${techCount})`} />
+                  <ul className="mt-4 flex flex-wrap gap-2.5">
                     {project.tags.map((tag) => {
-                      const Icon = techIconMap[tag]; // undefined kalau nama tech gak ada di mapping
+                      const Icon = techIconMap[tag];
                       return (
-                        <span
+                        <li
                           key={tag}
                           className="flex items-center gap-2 rounded-full border border-line bg-elevated/60 px-3.5 py-1.5 font-mono text-xs text-primary"
                         >
-                          {Icon ? <Icon className="h-3.5 w-3.5" /> : <CubeIcon />}
+                          {Icon ? <Icon className="h-3.5 w-3.5" aria-hidden /> : <CubeIcon />}
                           {tag}
-                        </span>
+                        </li>
                       );
                     })}
-                  </div>
+                  </ul>
                 </div>
               </ScrollReveal>
             )}
           </div>
 
-          {/* ── Kolom kanan: preview + key features ── */}
-          <div>
+          {/* ── Kolom kanan: preview + fitur (sticky di desktop) ── */}
+          <div className="lg:sticky lg:top-24 lg:self-start">
             <ScrollReveal delay={0.1}>
               <div className="relative">
                 <div
                   className="absolute -inset-4 -z-10 rounded-[28px] opacity-30 blur-2xl"
                   style={{ background: "radial-gradient(circle, var(--color-accent) 0%, transparent 70%)" }}
                 />
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  className="relative aspect-video overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]"
-                >
-                  {project.image ? (
+                <div className="relative aspect-video overflow-hidden rounded-2xl border border-line bg-elevated shadow-[0_20px_60px_-15px_rgba(0,0,0,0.6)]">
+                  {showImage ? (
                     <Image
-                      src={project.image}
-                      alt={`Tampilan project ${project.title}`}
+                      key={current}
+                      src={current}
+                      alt={`Tampilan ${project.title}, gambar ${active + 1} dari ${images.length}`}
                       fill
                       sizes="(max-width: 1024px) 100vw, 640px"
                       className="object-cover"
-                      priority
+                      priority={active === 0}
+                      onError={() => setFailed((prev) => ({ ...prev, [current]: true }))}
                     />
                   ) : (
                     <div className="absolute inset-0">
                       <BrowserMockup />
                     </div>
                   )}
-                </motion.div>
+                </div>
               </div>
+
+              {/* Thumbnail galeri: cuma muncul kalau ada lebih dari satu gambar */}
+              {images.length > 1 && (
+                <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+                  {images.map((src, i) => (
+                    <button
+                      key={src}
+                      type="button"
+                      onClick={() => setActive(i)}
+                      aria-label={`Lihat gambar ${i + 1}`}
+                      aria-pressed={i === active}
+                      className={`relative aspect-video w-28 shrink-0 overflow-hidden rounded-lg border transition-colors ${i === active ? "border-accent" : "border-line opacity-70 hover:opacity-100"
+                        }`}
+                    >
+                      {failed[src] ? (
+                        <span className="flex h-full w-full items-center justify-center bg-elevated text-muted">
+                          <CubeIcon />
+                        </span>
+                      ) : (
+                        <Image
+                          src={src}
+                          alt=""
+                          fill
+                          sizes="112px"
+                          className="object-cover"
+                          onError={() => setFailed((prev) => ({ ...prev, [src]: true }))}
+                        />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </ScrollReveal>
 
             {featureCount > 0 && (
-              <ScrollReveal delay={0.2}>
+              <ScrollReveal delay={0.15}>
                 <div className="mt-6 rounded-2xl border border-line bg-elevated/40 p-6">
-                  <h3 className="flex items-center gap-2 font-display text-lg font-semibold text-primary">
-                    <SparkleIcon /> Key Features
-                  </h3>
+                  <SectionTitle icon={<SparkleIcon />} label="Fitur utama" large />
                   <ul className="mt-4 space-y-3">
                     {project.features!.map((feature) => (
                       <li key={feature} className="flex items-start gap-2.5 text-sm text-muted">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                        <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent" />
                         {feature}
                       </li>
                     ))}
@@ -167,6 +257,33 @@ export default function ProjectDetailView({ project }: { project: Project }) {
             )}
           </div>
         </div>
+
+        {/* ── Tantangan & hasil: cuma muncul kalau diisi di data.ts ── */}
+        {(project.challenge || project.outcome) && (
+          <ScrollReveal>
+            <div className="mt-16 grid grid-cols-1 gap-6 md:grid-cols-2">
+              {project.challenge && (
+                <StoryBlock title="Tantangan" text={project.challenge} />
+              )}
+              {project.outcome && <StoryBlock title="Hasil" text={project.outcome} />}
+            </div>
+          </ScrollReveal>
+        )}
+
+        {/* ── Navigasi antar project ── */}
+        {(prev || next) && (
+          <nav
+            aria-label="Navigasi project"
+            className="mt-16 flex flex-col gap-4 border-t border-line pt-8 sm:flex-row sm:justify-between"
+          >
+            {prev ? (
+              <NavLink project={prev} label="Project sebelumnya" />
+            ) : (
+              <span />
+            )}
+            {next && <NavLink project={next} label="Project berikutnya" alignRight />}
+          </nav>
+        )}
       </div>
     </main>
   );
@@ -174,29 +291,63 @@ export default function ProjectDetailView({ project }: { project: Project }) {
 
 /* ── Sub components ── */
 
-function StatCard({ icon, value, label }: { icon: React.ReactNode; value: number; label: string }) {
+function SectionTitle({
+  icon,
+  label,
+  large = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  large?: boolean;
+}) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-line bg-elevated/50 p-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-bg text-accent">
-        {icon}
-      </div>
-      <div>
-        <p className="font-display text-xl font-bold text-primary">{value}</p>
-        <p className="font-mono text-[11px] text-muted">{label}</p>
-      </div>
+    <h2
+      className={
+        large
+          ? "flex items-center gap-2 font-display text-lg font-semibold text-primary"
+          : "flex items-center gap-2 font-mono text-sm font-semibold text-primary"
+      }
+    >
+      {icon} {label}
+    </h2>
+  );
+}
+
+function StoryBlock({ title, text }: { title: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-line bg-elevated/40 p-6">
+      <h2 className="font-display text-lg font-semibold text-primary">{title}</h2>
+      <p className="mt-3 text-sm leading-relaxed text-muted">{text}</p>
     </div>
   );
 }
 
-function LinkButton({ href, icon, label }: { href?: string; icon: React.ReactNode; label: string }) {
-  if (!href) {
-    return (
-      <span className="flex cursor-not-allowed items-center gap-2 rounded-full border border-line/60 px-4 py-2 font-mono text-xs text-muted/50">
-        {icon} No Link
+function NavLink({
+  project,
+  label,
+  alignRight = false,
+}: {
+  project: NavProject;
+  label: string;
+  alignRight?: boolean;
+}) {
+  return (
+    <Link
+      href={`/projects/${project.slug}`}
+      className={`group block max-w-sm rounded-xl border border-line px-5 py-4 transition-colors hover:border-accent ${alignRight ? "sm:ml-auto sm:text-right" : ""
+        }`}
+    >
+      <span className="font-mono text-[11px] text-muted">
+        {alignRight ? `${label} →` : `← ${label}`}
       </span>
-    );
-  }
+      <span className="mt-1 block font-display text-base font-semibold text-primary transition-colors group-hover:text-accent">
+        {project.title}
+      </span>
+    </Link>
+  );
+}
 
+function LinkButton({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   return (
     <a
       href={href}
@@ -213,24 +364,15 @@ function LinkButton({ href, icon, label }: { href?: string; icon: React.ReactNod
 
 function CodeIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <polyline points="16 18 22 12 16 6" />
       <polyline points="8 6 2 12 8 18" />
     </svg>
   );
 }
-function LayersIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <polygon points="12 2 2 7 12 12 22 7 12 2" />
-      <polyline points="2 17 12 22 22 17" />
-      <polyline points="2 12 12 17 22 12" />
-    </svg>
-  );
-}
 function ExternalIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
       <polyline points="15 3 21 3 21 9" />
       <line x1="10" y1="14" x2="21" y2="3" />
@@ -239,7 +381,7 @@ function ExternalIcon() {
 }
 function GitIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <line x1="6" y1="3" x2="6" y2="15" />
       <circle cx="18" cy="6" r="3" />
       <circle cx="6" cy="18" r="3" />
@@ -249,7 +391,7 @@ function GitIcon() {
 }
 function CubeIcon() {
   return (
-    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
       <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
       <line x1="12" y1="22.08" x2="12" y2="12" />
@@ -258,7 +400,7 @@ function CubeIcon() {
 }
 function SparkleIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden>
       <path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2 2M16 16l2 2M6 18l2-2M16 8l2-2" />
     </svg>
   );
