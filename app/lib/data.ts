@@ -224,5 +224,5 @@ export const profile = {
   linkedin: "https://www.linkedin.com/in/rizky-alfath-humaedi-6b6944331?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   instagram: "https://instagram.com/USERNAME_KAMU", // ganti sesuai akun asli
   tiktok: "https://tiktok.com/@USERNAME_KAMU", // ganti sesuai akun asli
-  resume: "/test.pdf", // kalau ada resume PDF, taruh linknya di sini
+  resume: "assets/cv/CV_Rizky_Alfath_Humaedi.pdf", // kalau ada resume PDF, taruh linknya di sini
 };
